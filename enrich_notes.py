@@ -121,27 +121,42 @@ def retry(retries: int = 3, delay: float = 2.0):
 # ════════════════════════════════════════════════════════════
 def _parse_inline(text: str) -> list[dict]:
     """
-    Divide una riga in segmenti rich_text Notion, gestendo **grassetto**.
-    Esempio: "Il **PIL** misura..." → [testo normale, "PIL" in grassetto, testo normale]
+    Divide una riga in segmenti rich_text Notion, gestendo:
+      **grassetto**  → annotations.bold
+      $formula$      → rich_text di tipo "equation"
     """
     if not text:
         return [{"type": "text", "text": {"content": ""},
                  "annotations": dict(DEFAULT_ANNOTATIONS)}]
 
     segments = []
-    parts = re.split(r"(\*\*.+?\*\*)", text)
+    # Divide su **grassetto** E $formula$ in un solo passaggio
+    parts = re.split(r"(\*\*.+?\*\*|\$[^$]+?\$)", text)
+
     for part in parts:
         if not part:
             continue
+
         if part.startswith("**") and part.endswith("**") and len(part) > 4:
             content = part[2:-2][:2000]
             ann = dict(DEFAULT_ANNOTATIONS)
             ann["bold"] = True
             segments.append({"type": "text", "text": {"content": content},
                              "annotations": ann})
+
+        elif part.startswith("$") and part.endswith("$") and len(part) > 2:
+            expression = part[1:-1].strip()[:1000]
+            if expression:
+                segments.append({
+                    "type": "equation",
+                    "equation": {"expression": expression},
+                    "annotations": dict(DEFAULT_ANNOTATIONS),
+                })
+
         else:
             segments.append({"type": "text", "text": {"content": part[:2000]},
                              "annotations": dict(DEFAULT_ANNOTATIONS)})
+
     return segments if segments else [
         {"type": "text", "text": {"content": ""}, "annotations": dict(DEFAULT_ANNOTATIONS)}
     ]
@@ -250,6 +265,15 @@ def markdown_to_blocks(text: str) -> list[dict]:
             if content:
                 blocks.append({"object": "block", "type": "numbered_list_item",
                                "numbered_list_item": {"rich_text": _parse_inline(content)}})
+            prev_empty = False
+
+        elif re.match(r"^\$\$.+\$\$$", stripped):
+            expression = stripped[2:-2].strip()
+            if expression:
+                blocks.append({
+                    "object": "block", "type": "equation",
+                    "equation": {"expression": expression[:1000]},
+                })
             prev_empty = False
 
         elif not stripped:
