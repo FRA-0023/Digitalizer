@@ -1,0 +1,9 @@
+.env
+error.txt
+enrich.log
+pipeline.log
+/cache_ocr_grezzo*
+/cache_ocr_revisionato*
+/cache_arricchito*
+/backup_pre_arricchimento*
+stato_arricchimento*.json
