@@ -1,10 +1,11 @@
-﻿# Digitalizer: Offline-First Multimodal OCR & Semantic Knowledge Engine
+# Digitalizer: Offline-First Multimodal OCR & Semantic Knowledge Engine
 
 [![Language](https://img.shields.io/badge/Language-Python%203.10+-3776AB?style=flat&logo=python)](https://www.python.org/)
 [![Vision OCR](https://img.shields.io/badge/Vision%20OCR-GLM--4V%20%7C%20Qwen2.5--VL-green)](#)
 [![Local LLM](https://img.shields.io/badge/Local%20LLM-Ollama%20(qwen2.5%3A14b)-orange)](#)
 [![Knowledge Base](https://img.shields.io/badge/Knowledge%20Base-Notion%20API%20(AST%20Parser)-black?logo=notion)](#)
 [![Data Privacy](https://img.shields.io/badge/Privacy-100%25%20Local%20Inference-brightgreen)](#)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 > Offline-first visual document extraction engine bridging local multimodal vision models, two-tier persistent disk caching, and hierarchical Notion knowledge synchronization.
 
